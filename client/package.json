@@ -1,0 +1,9 @@
+{
+  "name": "formulation-test-tracker-client",
+  "private": true,
+  "description": "The tracker's pages. Plain HTML, CSS and JS: nothing to build. On Cloudflare Pages, functions/api/[[path]].js passes /api/* on to the Node server.",
+  "scripts": {
+    "Build": "echo \"Static pages, nothing to build\"",
+    "build": "echo \"Static pages, nothing to build\""
+  }
+}
