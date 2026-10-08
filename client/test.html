@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conduct Test — Formulation Test Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="name">Formulation Test Tracker</div>
+      <div class="sub">Hi‑Tech Company submits → Manna Rubber Park Laboratory tests → results return</div>
+    </div>
+    <div class="who signed-in-only">
+      <span id="whoami"></span>
+      <button class="btn ghost small" id="btn-signout">Sign out</button>
+    </div>
+  </div>
+  <nav class="nav signed-in-only" aria-label="Pages">
+    <a href="./">Board</a>
+    <a class="company-only" href="add.html">Add<span class="nav-long"> Formulation</span></a>
+    <a class="lab-only" href="queue.html" aria-current="page"><span class="nav-long">Test </span>Queue</a>
+    <a href="history.html"><span class="nav-long">Test Result </span>History</a>
+    <a class="admin-only" href="users.html">Users</a>
+  </nav>
+</div>
+
+<main class="narrow">
+
+  <div class="page-head">
+    <h1>Conduct Test</h1>
+    <p>Test the formulation as Hi‑Tech Company specified, record each result, then send the results back.</p>
+  </div>
+
+  <div class="card" id="not-lab" hidden>
+    <div class="empty"><div class="big">Manna lab only</div><div>Tests are conducted by the lab. <a href="history.html">See your test results</a></div></div>
+  </div>
+
+  <div class="card" id="not-found" hidden>
+    <div class="empty"><div class="big">Not in the queue</div><div>This formulation no longer exists; Hi‑Tech Company may have withdrawn it. <a href="queue.html">Back to the Test Queue</a></div></div>
+  </div>
+
+  <div class="card" id="conduct" style="display:none"></div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/test.js"></script>
+</body>
+</html>

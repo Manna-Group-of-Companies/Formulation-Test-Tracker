@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add Formulation — Formulation Test Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="name">Formulation Test Tracker</div>
+      <div class="sub">Hi‑Tech Company submits → Manna Rubber Park Laboratory tests → results return</div>
+    </div>
+    <div class="who signed-in-only">
+      <span id="whoami"></span>
+      <button class="btn ghost small" id="btn-signout">Sign out</button>
+    </div>
+  </div>
+  <nav class="nav signed-in-only" aria-label="Pages">
+    <a href="./">Board</a>
+    <a class="company-only" href="add.html" aria-current="page">Add<span class="nav-long"> Formulation</span></a>
+    <a class="lab-only" href="queue.html"><span class="nav-long">Test </span>Queue</a>
+    <a href="history.html"><span class="nav-long">Test Result </span>History</a>
+    <a class="admin-only" href="users.html">Users</a>
+  </nav>
+</div>
+
+<main class="narrow">
+
+  <div class="page-head">
+    <h1>Add Formulation</h1>
+    <p>Send a formulation to the Manna Rubber Park lab for testing. It appears on the lab's board straight away.</p>
+  </div>
+
+  <div class="card" id="not-company" hidden>
+    <div class="empty"><div class="big">Hi‑Tech Company only</div><div>Formulations are sent in by Hi‑Tech Company. <a href="./">Back to the board</a></div></div>
+  </div>
+
+  <form class="card" id="add-form" hidden>
+    <section class="form-section">
+      <h2>Formulation</h2>
+      <div class="grid2">
+        <div class="field"><label for="af-name">Formulation name</label><input required id="af-name" placeholder="e.g. EPDM Compound v4"></div>
+        <div class="field"><label for="af-code">Formulation / batch code</label><input required id="af-code" placeholder="e.g. HTC-F-0142"></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label for="af-desc">Composition / description</label><textarea id="af-desc" rows="3" placeholder="Base polymer, filler loading, cure system, anything the lab should know"></textarea></div>
+      <div class="field" style="margin-top:12px"><label>Priority</label>
+        <div class="check-row">
+          <label class="check-item"><input type="radio" name="af-priority" value="normal" checked> Normal</label>
+          <label class="check-item"><input type="radio" name="af-priority" value="urgent"> Urgent</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2>Tests and acceptance limits</h2>
+      <p class="spec-line">Choose the tests you need. Limits are optional; without them the lab records the value but doesn't grade it pass or fail.</p>
+
+      <div id="af-tests"></div>
+    </section>
+
+    <div class="form-error" id="af-error" role="alert"></div>
+    <div class="form-actions">
+      <a class="btn ghost" href="./">Cancel</a>
+      <button type="submit" class="btn primary">Send to Manna lab</button>
+    </div>
+  </form>
+
+  <div class="card done-card" id="add-done" hidden>
+    <div class="done-mark">✓</div>
+    <h2>Sent to the Manna lab</h2>
+    <p class="spec-line" id="done-text"></p>
+    <div class="action-row">
+      <button class="btn primary" id="btn-add-another">Add another formulation</button>
+      <a class="btn" href="./">Go to the board</a>
+      <a class="btn" href="history.html">Test Result History</a>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/add.js"></script>
+</body>
+</html>

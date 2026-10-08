@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Formulation Test Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="name">Formulation Test Tracker</div>
+      <div class="sub">Hi‑Tech Company submits → Manna Rubber Park Laboratory tests → results return</div>
+    </div>
+    <div class="who signed-in-only">
+      <span id="whoami"></span>
+      <button class="btn ghost small" id="btn-signout">Sign out</button>
+    </div>
+  </div>
+  <nav class="nav signed-in-only" aria-label="Pages">
+    <a href="./" aria-current="page">Board</a>
+    <a class="company-only" href="add.html">Add<span class="nav-long"> Formulation</span></a>
+    <a class="lab-only" href="queue.html"><span class="nav-long">Test </span>Queue</a>
+    <a href="history.html"><span class="nav-long">Test Result </span>History</a>
+    <a class="admin-only" href="users.html">Users</a>
+  </nav>
+</div>
+
+<main>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Formulation board</h2>
+      <a class="btn primary small company-only" href="add.html" id="btn-new-formulation">+ Add formulation</a>
+    </div>
+    <div class="board-hint">Scroll sideways to see all five stages →</div>
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="card" id="formulation-detail" style="display:none"></div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Results sent back</h2>
+      <div class="filters"><select id="archive-filter-result"><option value="">Any outcome</option><option value="pass">All tests passed</option><option value="fail">One or more failed</option><option value="recorded">Recorded only (no spec)</option></select></div>
+    </div>
+    <div class="table-scroll"><table class="archive-table">
+      <thead><tr><th>Report no.</th><th>Formulation</th><th>Code</th><th>Outcome</th><th>Sent in</th><th>Released</th><th>Turnaround</th><th></th></tr></thead>
+      <tbody id="archive-body"></tbody>
+    </table></div>
+    <div class="empty" id="archive-empty" style="display:none"></div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

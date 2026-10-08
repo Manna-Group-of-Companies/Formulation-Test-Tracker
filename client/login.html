@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in — Formulation Test Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+
+<main class="login">
+
+  <section class="login-intro">
+    <div class="login-brand">
+      <div class="login-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18.2A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.8L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+      </div>
+      <div>
+        <div class="login-name">Formulation Test Tracker</div>
+        <div class="login-sub">Hi‑Tech Company × Manna Rubber Park Laboratory</div>
+      </div>
+    </div>
+    <h1>From formulation to test report, in one place.</h1>
+    <ol class="login-steps">
+      <li><b>Hi‑Tech Company sends a formulation</b><span>Its composition, the tests needed and the acceptance limits.</span></li>
+      <li><b>Manna lab assistants test it</b><span>Each result is graded pass or fail against those limits.</span></li>
+      <li><b>The results come back</b><span>A numbered test report, on Hi‑Tech's screen the moment the lab releases it.</span></li>
+    </ol>
+  </section>
+
+  <section class="login-panel">
+    <form class="login-card" id="signin-form" novalidate>
+      <h2>Sign in</h2>
+      <p class="login-notice" id="login-notice" role="status" hidden></p>
+
+      <div class="field" style="margin-top:18px">
+        <label for="si-name">Name</label>
+        <input required id="si-name" name="username" autocomplete="username" spellcheck="false" placeholder="e.g. R. Menon">
+      </div>
+
+      <div class="field" style="margin-top:12px">
+        <label for="si-pin">PIN</label>
+        <div class="code-wrap">
+          <input required id="si-pin" name="password" type="password" class="mono" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="current-password" placeholder="4–8 digits">
+          <button type="button" class="btn ghost small code-toggle" id="si-pin-toggle" aria-controls="si-pin" aria-pressed="false">Show</button>
+        </div>
+      </div>
+
+      <div class="form-error" id="si-error" role="alert"></div>
+      <button type="submit" class="btn primary login-submit">Sign in</button>
+
+      <p class="login-help">Use the name and PIN your administrator gave you. No account yet, or forgotten your PIN? Ask an administrator.</p>
+    </form>
+  </section>
+
+</main>
+
+<script type="module" src="js/login.js"></script>
+</body>
+</html>

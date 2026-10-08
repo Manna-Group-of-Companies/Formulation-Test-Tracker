@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test Result History — Formulation Test Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="name">Formulation Test Tracker</div>
+      <div class="sub">Hi‑Tech Company submits → Manna Rubber Park Laboratory tests → results return</div>
+    </div>
+    <div class="who signed-in-only">
+      <span id="whoami"></span>
+      <button class="btn ghost small" id="btn-signout">Sign out</button>
+    </div>
+  </div>
+  <nav class="nav signed-in-only" aria-label="Pages">
+    <a href="./">Board</a>
+    <a class="company-only" href="add.html">Add<span class="nav-long"> Formulation</span></a>
+    <a class="lab-only" href="queue.html"><span class="nav-long">Test </span>Queue</a>
+    <a href="history.html" aria-current="page"><span class="nav-long">Test Result </span>History</a>
+    <a class="admin-only" href="users.html">Users</a>
+  </nav>
+</div>
+
+<main>
+
+  <div class="page-head">
+    <h1>Test Result History</h1>
+    <p>Every formulation sent to the Manna lab, with the result of each test. Measured values and pass/fail appear once the lab releases them.</p>
+  </div>
+
+  <div class="tiles" id="h-tiles"></div>
+
+  <div class="card">
+    <div class="filter-bar">
+      <input type="search" id="h-search" placeholder="Search name, code or report no." aria-label="Search">
+      <select id="h-outcome" aria-label="Outcome">
+        <option value="">Any outcome</option>
+        <option value="pass">All tests passed</option>
+        <option value="fail">One or more failed</option>
+        <option value="recorded">Recorded only (no spec)</option>
+        <option value="awaiting">Awaiting results</option>
+      </select>
+      <select id="h-test" aria-label="Test">
+        <option value="">All tests</option>
+      </select>
+      <span class="spec-line" id="h-count"></span>
+    </div>
+  </div>
+
+  <div class="history-list" id="h-list"></div>
+  <div class="card" id="h-empty" hidden><div class="empty" id="h-empty-text"></div></div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/history.js"></script>
+</body>
+</html>
