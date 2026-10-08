@@ -1,0 +1,19 @@
+// Cloudflare Workers: `npx wrangler deploy` from this folder.
+// The pages are static assets; worker.js handles /api/* (see there).
+{
+  "name": "formulation-test-tracker",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    // /api/* goes to worker.js even before asset lookup.
+    "run_worker_first": ["/api/*"],
+    // Unknown paths get the board, as on the Node server.
+    "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "API_ORIGIN": "https://formulation-test-tracker.onrender.com"
+  },
+  "observability": { "enabled": true }
+}

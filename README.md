@@ -79,15 +79,16 @@ Settings, in `server/.env` or the environment: `DATABASE_URL` (required)
 and `PORT` (default 3000). On a host such as Render, set `DATABASE_URL`
 as an environment variable there.
 
-### Pages on Cloudflare Pages (optional)
+### Pages on Cloudflare Workers (optional)
 
 The Node server already serves the pages itself. To serve them from
-Cloudflare Pages instead, use root directory `client` (build command
-`npm run build`, which does nothing). `client/functions/api/[[path]].js`
+Cloudflare instead, deploy `client/` as a Worker: root directory `client`,
+build command `npm run build` (it does nothing), deploy command
+`npx wrangler deploy`. `client/wrangler.jsonc` uploads the pages as static
+assets (`.assetsignore` leaves out everything else), and `client/worker.js`
 passes every `/api/*` request on to the Node server, so signing in and
-live updates work on the Pages domain. It points at
-`https://formulation-test-tracker.onrender.com`; set `API_ORIGIN` in the
-Pages project's environment variables to use another address.
+live updates work on the Cloudflare domain. The server's address is
+`API_ORIGIN` in `wrangler.jsonc`.
 
 ## How the process works
 
@@ -215,8 +216,8 @@ client/
   history.html     Test Result History (both sides)
   users.html       Users: accounts and PINs (administrators)
   report.html      printable test report (report.html?id=…)
-  package.json     for Cloudflare Pages only: an empty build step
-  functions/api/[[path]].js   Cloudflare Pages: passes /api/* on to the Node server
+  package.json, wrangler.jsonc, worker.js, .assetsignore
+                   Cloudflare Workers only: the pages as assets, /api/* to the Node server
   css/styles.css, css/report.css
   js/
     api.js         fetch wrapper; reports when the sign-in has ended

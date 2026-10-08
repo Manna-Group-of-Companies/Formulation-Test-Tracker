@@ -1,0 +1,10 @@
+# Files in this folder that are not pages: not uploaded as Cloudflare assets.
+node_modules
+package.json
+package-lock.json
+bun.lock
+bun.lockb
+wrangler.jsonc
+worker.js
+.assetsignore
+.wrangler
