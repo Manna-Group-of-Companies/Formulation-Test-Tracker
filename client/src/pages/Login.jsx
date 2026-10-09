@@ -49,7 +49,7 @@ export default function Login() {
     setError("");
     var n = name.trim(), p = pin.trim();
     if (!n) { setError("Enter your name."); nameRef.current.focus(); return; }
-    if (!PIN_PATTERN.test(p)) { setError("Enter your PIN — 6 to 8 digits."); pinRef.current.focus(); return; }
+    if (!PIN_PATTERN.test(p)) { setError("Enter your PIN — 4 to 8 digits."); pinRef.current.focus(); return; }
     setBusy(true);
     try {
       await signIn(n, p);
@@ -101,7 +101,7 @@ export default function Login() {
               <label htmlFor="si-pin">PIN</label>
               <div className="code-wrap">
                 <input ref={pinRef} id="si-pin" name="password" type={showPin ? "text" : "password"} className="mono" inputMode="numeric" pattern="[0-9]*" maxLength={8}
-                  autoComplete="current-password" placeholder="6–8 digits" value={pin}
+                  autoComplete="current-password" placeholder="4–8 digits" value={pin}
                   onChange={function (e) { setPin(e.target.value.replace(/\D/g, "")); }} />
                 <button type="button" className="btn ghost small code-toggle" aria-controls="si-pin" aria-pressed={showPin}
                   onClick={function () { setShowPin(!showPin); pinRef.current.focus(); }}>{showPin ? "Hide" : "Show"}</button>

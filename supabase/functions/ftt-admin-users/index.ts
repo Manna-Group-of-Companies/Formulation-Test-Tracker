@@ -7,14 +7,17 @@
 //   POST { action: "update", id, name?, role?, admin?, pin? }
 //   POST { action: "delete", id }
 //
-// Each person signs in with a name and a PIN. Supabase Auth wants an email
-// address and a password, so the name is turned into an internal address
-// (see emailFor, which client/src/lib/auth.js repeats) and the PIN is the
-// password. Listing accounts is the database function ftt_list_users.
+// Each person signs in with a name and a PIN (through ftt-sign-in).
+// Supabase Auth wants an email address and a password, so the name is
+// turned into an internal address and the PIN into a password mixed with
+// the secret PIN_PEPPER. ftt-sign-in and tools/create-account.mjs use the
+// same rules; keep the three in step. Listing accounts is the database
+// function ftt_list_users.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const PIN_PEPPER = Deno.env.get("PIN_PEPPER") ?? "";
 function secretKey(): string {
   try {
     const keys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") ?? "{}");
@@ -27,8 +30,8 @@ const admin = createClient(SUPABASE_URL, secretKey(), {
 });
 
 const ROLES = ["company", "lab"];
-const PIN_PATTERN = /^\d{6,8}$/;
-const PIN_RULE = "a PIN is 6 to 8 digits";
+const PIN_PATTERN = /^\d{4,8}$/;
+const PIN_RULE = "a PIN is 4 to 8 digits";
 const EMAIL_DOMAIN = "tracker.mannarubber.com";
 
 const CORS = {
@@ -50,10 +53,19 @@ function nameKey(name: string) {
   return String(name || "").trim().replace(/\s+/g, " ").replace(/[‐-―−]/g, "-").toLowerCase();
 }
 
+function hex(buf: ArrayBuffer) {
+  return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 async function emailFor(name: string) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(nameKey(name)));
-  const hex = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
-  return `u${hex.slice(0, 24)}@${EMAIL_DOMAIN}`;
+  return `u${hex(digest).slice(0, 24)}@${EMAIL_DOMAIN}`;
+}
+
+async function pinPassword(pin: string) {
+  if (!PIN_PEPPER) throw new Error("PIN_PEPPER is not set");
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(PIN_PEPPER), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return hex(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("ftt-pin:" + pin)));
 }
 
 function cleanName(v: unknown) {
@@ -101,7 +113,7 @@ async function create(body: Record<string, unknown>) {
   const pin = cleanPin(body.pin);
   await checkNameFree(name);
   const { data, error } = await admin.auth.admin.createUser({
-    email: await emailFor(name), password: pin, email_confirm: true, user_metadata: { name },
+    email: await emailFor(name), password: await pinPassword(pin), email_confirm: true, user_metadata: { name },
   });
   if (error || !data.user) throw new HttpError(400, error?.message ?? "could not add the account");
   const { data: p, error: e2 } = await admin.from("profiles")
@@ -134,7 +146,7 @@ async function update(body: Record<string, unknown>, me: { id: string }) {
     if (!body.admin && u.is_admin && await adminCount() === 1) throw new HttpError(409, "keep at least one administrator");
     profile.is_admin = !!body.admin;
   }
-  if (body.pin !== undefined) account.password = cleanPin(body.pin);
+  if (body.pin !== undefined) account.password = await pinPassword(cleanPin(body.pin));
 
   if (Object.keys(account).length) {
     const { error } = await admin.auth.admin.updateUserById(u.id, account);

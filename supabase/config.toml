@@ -5,3 +5,7 @@ project_id = "nnjwggmixzkdzpeezayj"
 # works with both the legacy and the new JWT signing keys.
 [functions.ftt-admin-users]
 verify_jwt = false
+
+# Sign-in happens before there is a session to check.
+[functions.ftt-sign-in]
+verify_jwt = false

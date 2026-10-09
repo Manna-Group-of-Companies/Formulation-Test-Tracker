@@ -103,5 +103,5 @@
   .report-root .verdict, .report-root .draft{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }
 
-/* The page itself fills the window (it replaced the report's own <body>). */
-.report-root{ min-height:100vh; padding-top:1px; }
+/* The page fills the window and holds the sheet's margins (it replaced the report's own <body>). */
+.report-root{ min-height:100vh; display:flow-root; }

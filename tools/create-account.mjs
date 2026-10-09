@@ -4,10 +4,11 @@
 //
 //   npm run create-account -- "<name>" <company|lab> [pin] [--admin]
 //
-// Without a PIN it makes a random 6-digit one and prints it. If the name
+// Without a PIN it makes a random 4-digit one and prints it. If the name
 // already has an account, its side, PIN and administrator flag are updated.
-// The name -> email mapping matches client/src/lib/auth.js and the
-// ftt-admin-users Edge Function.
+// The name -> email and PIN -> password rules (PIN mixed with the secret
+// PIN_PEPPER) are the same in the ftt-sign-in and ftt-admin-users Edge
+// Functions; keep the three in step.
 
 import path from "node:path";
 import crypto from "node:crypto";
@@ -16,9 +17,9 @@ import { createClient } from "@supabase/supabase-js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 try { process.loadEnvFile(path.join(here, ".env")); } catch { /* use the real environment */ }
-const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
-if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
-  console.error("SUPABASE_URL and SUPABASE_SECRET_KEY must be set in tools/.env (see .env.example).");
+const { SUPABASE_URL, SUPABASE_SECRET_KEY, PIN_PEPPER } = process.env;
+if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || !PIN_PEPPER) {
+  console.error("SUPABASE_URL, SUPABASE_SECRET_KEY and PIN_PEPPER must be set in tools/.env (see .env.example).");
   process.exit(1);
 }
 
@@ -29,13 +30,14 @@ if (!name || !["company", "lab"].includes(role)) {
   console.error('Usage: npm run create-account -- "<name>" <company|lab> [pin] [--admin]');
   process.exit(1);
 }
-const pin = pinArg || String(crypto.randomInt(1000000)).padStart(6, "0");
-if (!/^\d{6,8}$/.test(pin)) { console.error("A PIN is 6 to 8 digits."); process.exit(1); }
+const pin = pinArg || String(crypto.randomInt(10000)).padStart(4, "0");
+if (!/^\d{4,8}$/.test(pin)) { console.error("A PIN is 4 to 8 digits."); process.exit(1); }
 
 function nameKey(n) {
   return String(n || "").trim().replace(/\s+/g, " ").replace(/[‐-―−]/g, "-").toLowerCase();
 }
 const email = "u" + crypto.createHash("sha256").update(nameKey(name)).digest("hex").slice(0, 24) + "@tracker.mannarubber.com";
+const password = crypto.createHmac("sha256", PIN_PEPPER).update("ftt-pin:" + pin).digest("hex");
 const cleanName = name.trim().replace(/\s+/g, " ");
 
 const sb = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
@@ -45,10 +47,10 @@ if (findErr) { console.error("Could not read profiles:", findErr.message); proce
 
 let id = existing?.id;
 if (id) {
-  const { error } = await sb.auth.admin.updateUserById(id, { password: pin, email, email_confirm: true });
+  const { error } = await sb.auth.admin.updateUserById(id, { password, email, email_confirm: true });
   if (error) { console.error("Could not update the account:", error.message); process.exit(1); }
 } else {
-  const { data, error } = await sb.auth.admin.createUser({ email, password: pin, email_confirm: true, user_metadata: { name: cleanName } });
+  const { data, error } = await sb.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { name: cleanName } });
   if (error) { console.error("Could not create the account:", error.message); process.exit(1); }
   id = data.user.id;
 }

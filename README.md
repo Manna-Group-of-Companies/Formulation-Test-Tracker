@@ -11,26 +11,36 @@ It has two parts and no server of its own:
   the built files.
 - **Supabase**: Postgres holds the data and enforces every rule (database
   functions and row level security, in `supabase/migrations/`). Supabase
-  Auth handles sign-in, Realtime sends live updates, and an Edge Function
-  (`supabase/functions/ftt-admin-users/`) manages accounts.
+  Auth keeps people signed in, Realtime sends live updates, and two Edge
+  Functions (`supabase/functions/`) check PINs at sign-in and manage
+  accounts.
 
 ## Setting it up
 
 You need [Node.js](https://nodejs.org) 20.12 or newer and the Supabase
 project `nnjwggmixzkdzpeezayj`. One-off steps:
 
-1. **Keys.** In `tools/`, copy `.env.example` to `.env` (never committed).
-   Fill in `DATABASE_URL` (dashboard → **Connect** → **Session pooler**,
-   with the database password) and `SUPABASE_SECRET_KEY` (dashboard →
-   **Project Settings → API Keys → Secret keys**).
+1. **Keys.** In `tools/`, copy `.env.example` to `.env` (never committed)
+   and fill it in:
+   - `DATABASE_URL`: dashboard → **Connect** → **Session pooler**, with
+     the database password
+   - `SUPABASE_SECRET_KEY`: dashboard → **Project Settings → API Keys →
+     Secret keys**
+   - `PIN_PEPPER`: a long random value, e.g. from
+     `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
+     Keep it: changing it means every PIN has to be set again.
+   - `SUPABASE_ACCESS_TOKEN`: a personal access token from
+     supabase.com/dashboard/account/tokens. It's only needed for step 3;
+     revoke it afterwards.
 2. **Database.** In `tools/`: `npm install`, then `npm run migrate`. This
    creates the tables, functions and access rules. It is safe to run again
    after pulling changes to `supabase/migrations/`.
-3. **Accounts function.** Deploy the Edge Function the Users page uses:
-   `npx supabase functions deploy ftt-admin-users --project-ref nnjwggmixzkdzpeezayj`
-   (after `npx supabase login` once). `supabase/config.toml` turns off the
-   gateway's JWT check for it, because the function checks the sign-in
-   itself.
+3. **Edge Functions.** In `tools/`: `npm run deploy-functions`. It deploys
+   `ftt-sign-in` and `ftt-admin-users` and gives them the `PIN_PEPPER`
+   secret, through the Supabase API (no Supabase CLI needed).
+   `supabase/config.toml` turns off the gateway's JWT check for both,
+   because sign-in happens before there is a session, and the accounts
+   function checks the caller itself.
 4. **First administrator.** In `tools/`:
    `npm run create-account -- "Lab" lab --admin`. It prints a PIN. Sign in
    with it and add everyone else on the **Users** page.
@@ -66,14 +76,22 @@ only lets a browser call what the database functions allow.
 ### Signing in
 
 Everyone signs in on the **login page** (`/login`) with their own **name
-and PIN** (6 to 8 digits); **Show** reveals the PIN as you type it. The
+and PIN** (4 to 8 digits); **Show** reveals the PIN as you type it. The
 account decides the side, so there is nothing else to choose. Names are
 not case-sensitive. Supabase Auth keeps the sign-in in that browser and
-renews it, and slows down repeated wrong PINs from the same address.
+renews it.
+
+A short PIN can be guessed, so the `ftt-sign-in` Edge Function checks it
+and counts wrong ones. After 5 wrong PINs for a name from one address,
+that name has to wait 5 minutes. After 20 wrong PINs for a name from
+anywhere within an hour, it waits 30 minutes.
 
 Behind the scenes a name becomes an internal email address
-(`u<hash>@tracker.mannarubber.com`) and the PIN is that account's
-password. No mail is ever sent to these addresses.
+(`u<hash>@tracker.mannarubber.com`), and the PIN, mixed with the secret
+`PIN_PEPPER`, becomes that account's password. No mail is ever sent to
+these addresses. Because the pepper never leaves the server, guessing
+PINs straight at Supabase Auth gets nowhere, and the count of wrong PINs
+can't be avoided.
 
 - If you opened a particular page while signed out, such as a Test Result
   History bookmark or a Conduct Test or report link, you're taken back to
@@ -228,9 +246,11 @@ client/                    the pages (React + Vite)
   wrangler.jsonc           Cloudflare Workers: serve dist/ as a single-page app
 supabase/
   migrations/              tables, access rules and every workflow rule (SQL)
+  functions/ftt-sign-in/   sign-in: checks the PIN, counts wrong ones
   functions/ftt-admin-users/   adding, changing and removing accounts
-  config.toml              Supabase CLI settings
-tools/                     one-off setup: npm run migrate, npm run create-account
+  config.toml              Edge Function settings (JWT check off for both)
+tools/                     setup: npm run migrate, npm run deploy-functions,
+                           npm run create-account
 ```
 
 ## Data
@@ -240,7 +260,8 @@ Everything lives in the Supabase Postgres database: `formulations`,
 flag; the account itself is in Supabase Auth). The browser can't read or
 change these tables directly. Row level security is on with no policies,
 and the table privileges are revoked. Every read and write goes through the
-`ftt_*` functions, which check who is asking. The tables `users` and
+`ftt_*` functions, which check who is asking. `ftt_sign_in_attempts`
+counts wrong PINs; only the sign-in function can reach it. The tables `users` and
 `sessions` are left over from the earlier Node server and are no longer
 used. They can be dropped once everyone has their new account.
 

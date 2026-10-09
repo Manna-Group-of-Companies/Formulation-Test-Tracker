@@ -1,15 +1,18 @@
 {
   "name": "formulation-test-tracker-tools",
   "private": true,
-  "description": "Setting up the Supabase project: apply the database migrations, create the first accounts.",
+  "description": "Setting up the Supabase project: apply the database migrations, deploy the Edge Functions, create the first accounts.",
   "type": "module",
   "scripts": {
     "migrate": "node apply-migrations.mjs",
-    "create-account": "node create-account.mjs"
+    "create-account": "node create-account.mjs",
+    "deploy-functions": "node deploy-functions.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
     "pg": "^8.23.1"
   },
-  "engines": { "node": ">=20.12" }
+  "engines": {
+    "node": ">=20.12"
+  }
 }

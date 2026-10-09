@@ -24,7 +24,7 @@ function digits(v) { return v.replace(/\D/g, ""); }
 function PinField({ id, value, onChange, autoFocus }) {
   return (
     <div className="code-wrap">
-      <input id={id} className="mono" inputMode="numeric" maxLength={8} autoComplete="off" placeholder="6–8 digits" autoFocus={autoFocus}
+      <input id={id} className="mono" inputMode="numeric" maxLength={8} autoComplete="off" placeholder="4–8 digits" autoFocus={autoFocus}
         value={value} onChange={function (e) { onChange(digits(e.target.value)); }} />
       <button type="button" className="btn ghost small code-toggle" onClick={function () { onChange(randomPin()); }}>New</button>
     </div>
@@ -57,7 +57,7 @@ function UserRow({ u, me, reload, resetting, setResetting }) {
 
   function savePin(e) {
     e.preventDefault();
-    if (!PIN_PATTERN.test(pin)) { setError("A PIN is 6 to 8 digits."); return; }
+    if (!PIN_PATTERN.test(pin)) { setError("A PIN is 4 to 8 digits."); return; }
     adminUsers("update", { id: u.id, pin: pin }).then(function () {
       setResetting(null);
       toast("New PIN saved for " + u.name + " — " + pin);
@@ -121,7 +121,7 @@ export default function Users() {
     setError("");
     var data = { name: form.name.trim(), role: form.role, pin: form.pin.trim(), admin: form.admin };
     if (!data.name) { setError("Enter the person's name."); return; }
-    if (!PIN_PATTERN.test(data.pin)) { setError("Give them a PIN of 6 to 8 digits, or press New."); return; }
+    if (!PIN_PATTERN.test(data.pin)) { setError("Give them a PIN of 4 to 8 digits, or press New."); return; }
     setBusy(true);
     adminUsers("create", data).then(function (u) {
       toast("Added " + u.name + " — PIN " + data.pin);
