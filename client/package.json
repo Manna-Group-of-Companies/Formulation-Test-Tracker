@@ -1,9 +1,26 @@
 {
-  "name": "formulation-test-tracker-client",
+  "name": "formulation-test-tracker",
   "private": true,
-  "description": "The tracker's pages. Plain HTML, CSS and JS: nothing to build. On Cloudflare Pages, functions/api/[[path]].js passes /api/* on to the Node server.",
+  "version": "3.0.0",
+  "description": "Formulation Test Tracker: React pages on a Supabase backend.",
+  "type": "module",
   "scripts": {
-    "Build": "echo \"Static pages, nothing to build\"",
-    "build": "echo \"Static pages, nothing to build\""
+    "dev": "vite",
+    "build": "vite build",
+    "Build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router": "^7.18.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.2.0",
+    "vite": "^7.3.7"
+  },
+  "overrides": {
+    "rollup": "npm:@rollup/wasm-node@^4.64.3"
   }
 }

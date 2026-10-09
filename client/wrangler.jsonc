@@ -1,19 +1,13 @@
-// Cloudflare Workers: `npx wrangler deploy` from this folder.
-// The pages are static assets; worker.js handles /api/* (see there).
+// Cloudflare Workers: the built React app (dist/) as static assets.
+// Cloudflare runs `npm run Build`, then `npx wrangler deploy` from this folder.
 {
   "name": "formulation-test-tracker",
-  "main": "worker.js",
   "compatibility_date": "2026-10-01",
   "assets": {
-    "directory": ".",
-    "binding": "ASSETS",
-    // /api/* goes to worker.js even before asset lookup.
-    "run_worker_first": ["/api/*"],
-    // Unknown paths get the board, as on the Node server.
+    "directory": "./dist",
+    // Every address the app doesn't have a file for gets index.html, and
+    // React Router shows the right page.
     "not_found_handling": "single-page-application"
-  },
-  "vars": {
-    "API_ORIGIN": "https://formulation-test-tracker.onrender.com"
   },
   "observability": { "enabled": true }
 }

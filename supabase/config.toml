@@ -1,0 +1,7 @@
+# Supabase CLI settings for this project (npx supabase ...).
+project_id = "nnjwggmixzkdzpeezayj"
+
+# The function checks the caller's sign-in itself (auth.getUser), which
+# works with both the legacy and the new JWT signing keys.
+[functions.ftt-admin-users]
+verify_jwt = false

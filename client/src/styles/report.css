@@ -1,0 +1,107 @@
+/* The test report page. Every rule is scoped to .report-root, so it only
+   applies on /report/:id and leaves the rest of the app alone. */
+.report-root{
+  --page:#e7e4dd;
+  --paper:#ffffff;
+  --ink:#1d1b18;
+  --ink-dim:#625d54;
+  --line:#d6d0c4;
+  --accent:#245e4f;
+  --good:#1e6b46;
+  --good-bg:#e1ede4;
+  --bad:#a3241c;
+  --bad-bg:#f4e0dd;
+  --neutral-bg:#eee9de;
+  --draft:#8a5a0b;
+  --draft-bg:#f6ecd2;
+}
+@media (prefers-color-scheme: dark){
+  .report-root{ --page:#191a18; }
+}
+
+.report-root, .report-root *{ box-sizing:border-box; }
+.report-root{ margin:0; padding:0; }
+.report-root{ background:var(--page); color:var(--ink); font-family:'Inter','IBM Plex Sans',system-ui,sans-serif; font-size:13px; line-height:1.45; }
+.report-root .mono{ font-family:'IBM Plex Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+
+.report-root .toolbar{ max-width:820px; margin:0 auto; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.report-root .tb-link{ color:var(--accent); font-weight:600; text-decoration:none; }
+@media (prefers-color-scheme: dark){ .report-root .tb-link{ color:#7fc9a8; } }
+.report-root .tb-btn{ font:inherit; font-weight:600; padding:8px 14px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; }
+.report-root .tb-btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+.report-root .sheet{ max-width:820px; margin:0 auto 40px; background:var(--paper); padding:44px 48px; border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08); }
+@media (max-width:640px){ .report-root .sheet{ padding:24px 16px; margin:0 0 24px; border-radius:0; } }
+.report-root .loading, .report-root .error{ color:var(--ink-dim); text-align:center; padding:40px 0; margin:0; }
+.report-root .error a{ color:var(--accent); font-weight:600; }
+
+.report-root .rh{ display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; padding-bottom:18px; border-bottom:2px solid var(--ink); }
+.report-root .org{ font-family:'IBM Plex Sans',system-ui,sans-serif; font-size:22px; font-weight:700; letter-spacing:-.2px; }
+.report-root .org-sub{ font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-dim); font-weight:600; margin-top:2px; }
+.report-root .rh-meta{ display:grid; grid-template-columns:repeat(3,auto); gap:4px 22px; }
+
+.report-root .kv{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.report-root .k{ font-size:10px; text-transform:uppercase; letter-spacing:.6px; font-weight:700; color:var(--ink-dim); }
+.report-root .v{ font-size:13px; font-weight:600; overflow-wrap:anywhere; }
+
+.report-root .draft{ margin-top:16px; padding:8px 12px; border-radius:6px; background:var(--draft-bg); color:var(--draft); font-weight:700; text-transform:uppercase; letter-spacing:.6px; font-size:11px; text-align:center; }
+
+.report-root section{ margin-top:22px; }
+.report-root section h3{ font-family:'IBM Plex Sans',system-ui,sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--ink-dim); margin:0 0 8px; }
+.report-root section p{ margin:0; }
+.report-root .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 24px; }
+
+.report-root .table-scroll{ overflow-x:auto; }
+.report-root table{ width:100%; border-collapse:collapse; min-width:560px; }
+.report-root th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.5px; color:var(--ink-dim); font-weight:700; padding:6px 8px; border-bottom:1px solid var(--ink); white-space:nowrap; }
+.report-root td{ padding:9px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+.report-root .recipe-list{ list-style:none; margin:0; padding:0; max-width:420px; }
+.report-root .recipe-list li{ display:flex; justify-content:space-between; gap:12px; padding:4px 0; border-bottom:1px solid var(--line); }
+.report-root .recipe-list .recipe-total{ font-weight:700; border-bottom:0; border-top:1px solid var(--ink); }
+.report-root .note{ font-size:11px; color:var(--ink-dim); font-weight:400; margin-top:2px; }
+
+.report-root .verdict{ display:inline-block; padding:2px 9px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; white-space:nowrap; background:var(--neutral-bg); color:var(--ink-dim); }
+.report-root .verdict.pass{ background:var(--good-bg); color:var(--good); }
+.report-root .verdict.fail{ background:var(--bad-bg); color:var(--bad); }
+.report-root .outcome-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.report-root .outcome-row .verdict{ font-size:13px; padding:5px 14px; }
+.report-root .remarks{ white-space:pre-wrap; }
+
+.report-root .sign{ padding-top:18px; border-top:1px solid var(--line); }
+.report-root .fine{ margin-top:26px; font-size:10.5px; color:var(--ink-dim); }
+
+/* Phones: each test becomes a labelled block instead of a sideways-scrolling table. */
+@media screen and (max-width:640px){
+  .report-root .toolbar{ padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); }
+  .report-root .rh-meta{ grid-template-columns:repeat(2,auto); }
+  .report-root .table-scroll{ overflow:visible; }
+  .report-root table{ min-width:0; }
+  .report-root thead{ display:none; }
+  .report-root table, .report-root tbody{ display:block; }
+  .report-root tbody tr{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-areas:"test verdict" "measured spec" "specimen tested"; gap:8px 12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .report-root td{ display:block; padding:0; border:none; min-width:0; overflow-wrap:anywhere; }
+  .report-root td[data-label]::before{ content:attr(data-label); display:block; font-family:'Inter','IBM Plex Sans',system-ui,sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; color:var(--ink-dim); margin-bottom:2px; }
+  .report-root .r-test{ grid-area:test; }
+  .report-root .r-verdict{ grid-area:verdict; justify-self:end; }
+  .report-root .r-measured{ grid-area:measured; }
+  .report-root .r-spec{ grid-area:spec; }
+  .report-root .r-specimen{ grid-area:specimen; }
+  .report-root .r-tested{ grid-area:tested; }
+}
+@media (pointer:coarse){
+  .report-root .tb-link, .report-root .tb-btn{ display:inline-flex; align-items:center; min-height:44px; }
+  .report-root .tb-btn{ padding:10px 16px; }
+}
+
+@page{ size:A4; margin:16mm; }
+@media print{
+  .report-root{ background:#fff; }
+  .report-root .no-print{ display:none !important; }
+  .report-root .sheet{ box-shadow:none; padding:0; margin:0; max-width:none; }
+  .report-root .table-scroll{ overflow:visible; }
+  .report-root table{ min-width:0; }
+  .report-root .verdict, .report-root .draft{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+
+/* The page itself fills the window (it replaced the report's own <body>). */
+.report-root{ min-height:100vh; padding-top:1px; }
