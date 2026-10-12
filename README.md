@@ -120,7 +120,7 @@ gives the existing account a new PIN and prints it.
 
 | Step | Who | What happens |
 |---|---|---|
-| 1. **Send** | Hi-Tech Company | Opens **Add Formulation**. Enters the name and batch code, sets the priority, gives the raw materials as a percentage of the reactor charge (Crumb, RA 480, Process Oil, Pine Tar and Water to start with; more can be added; they can't total more than 100 %), the reactor conditions (temperature °C, cooking time min, pressure kg/cm², air releasing time min) and any notes, ticks the tests (see the list below, in any combination), and optionally sets acceptance limits for each. The card appears in **Submitted**. Hi-Tech can withdraw it until the lab starts. |
+| 1. **Send** | Hi-Tech Company | Opens **Add Formulation**. Enters the name and batch code, sets the priority, gives each raw material's weight in grams (Crumb, RA 480, Process Oil, Pine Tar and Water to start with; more can be added; the total weight is shown as you type), the reactor conditions (temperature °C, cooking time min, pressure kg/cm², air releasing time min) and any notes, ticks the tests (see the list below, in any combination), and optionally sets acceptance limits for each. The card appears in **Submitted**. Hi-Tech can withdraw it until the lab starts. |
 | 2. **Test** | Manna lab | Opens the card and clicks **Start testing**, then records a result for each requested test (specimen/lot, measured value, date, notes). The database grades each result as Pass or Fail against Hi-Tech's limits, or "Recorded" if no limits were set. |
 | 2a. *On hold* | Manna lab | If something is missing, the lab clicks **Put on hold** and says what it needs. Hi-Tech sees the reason on the card straight away. **Resume testing** picks up where it left off. |
 | 3. **Review** | Manna lab | Once every requested test has a result, the formulation moves itself to **Lab review**. The lab checks the results, previews the report (marked DRAFT), and adds remarks if needed. |
@@ -152,7 +152,7 @@ When signed in as Hi-Tech Company, the top bar has three links:
 
 - **Board**: the live board of every formulation, by status.
 - **Add Formulation**: the form for sending a new formulation to the lab.
-  The raw materials show their total as you type. A test's limit fields
+  The raw materials' total weight in grams shows as you type. A test's limit fields
   are enabled only when the test is ticked, and a minimum higher than its
   maximum is caught before sending.
 - **Test Result History**: every formulation sent, newest first, with its

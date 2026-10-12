@@ -1,7 +1,7 @@
 // Small pieces shared by the pages: pass/fail badges, the row of summary
 // tiles, and the reactor recipe box.
 
-import { REACTOR_FIELDS, hasReactor, materialsTotal } from "../lib/format.js";
+import { REACTOR_FIELDS, hasReactor, materialsTotal, gramsText } from "../lib/format.js";
 
 export function Badge({ result }) {
   if (result === "pass") return <span className="badge pass">Pass</span>;
@@ -39,9 +39,9 @@ export function Recipe({ f }) {
           <span className="k">Raw materials</span>
           <ul className="recipe-list">
             {materials.map(function (m, i) {
-              return <li key={i}><span>{m.name}</span><span className="mono">{m.percent != null ? m.percent + " %" : "—"}</span></li>;
+              return <li key={i}><span>{m.name}</span><span className="mono">{gramsText(m.grams)}</span></li>;
             })}
-            <li className="recipe-total"><span>Total</span><span className="mono">{materialsTotal(materials)} %</span></li>
+            <li className="recipe-total"><span>Total</span><span className="mono">{gramsText(materialsTotal(materials))}</span></li>
           </ul>
         </div>
       )}

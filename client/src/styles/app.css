@@ -296,12 +296,11 @@ main.narrow{ max-width:760px; }
 /* Add Formulation: raw material rows */
 .material-rows{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
 .material-row{ display:grid; grid-template-columns:minmax(0,1fr) 130px auto; gap:8px; align-items:center; }
-.mr-pct{ display:flex; align-items:center; gap:6px; }
-.mr-pct input{ width:100%; text-align:right; }
-.mr-pct span{ color:var(--ink-dim); font-size:13px; }
+.mr-amount{ display:flex; align-items:center; gap:6px; }
+.mr-amount input{ width:100%; text-align:right; }
+.mr-amount span{ color:var(--ink-dim); font-size:13px; }
 .material-foot{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:10px; }
-.material-total{ font-size:13px; font-weight:600; color:var(--good); }
-.material-total.off{ color:var(--urgent); }
+.material-total{ font-size:13px; font-weight:600; }
 @media (max-width:520px){ .material-row{ grid-template-columns:minmax(0,1fr) 96px auto; } }
 
 /* Test Queue (lab) */

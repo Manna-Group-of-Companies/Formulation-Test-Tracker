@@ -1,5 +1,5 @@
 // What Hi-Tech Company fills in to send a formulation to the Manna lab: what
-// it is, the reactor recipe (raw materials as % of the charge, reactor
+// it is, the reactor recipe (each raw material's weight in grams, reactor
 // conditions), which tests to run, and optional acceptance limits for each
 // test. The lab's results are graded pass/fail against those limits.
 
@@ -10,10 +10,10 @@ import { EmptyCard } from "../components/bits.jsx";
 import { useSession } from "../context/session.jsx";
 import { useData } from "../context/data.jsx";
 import { api } from "../lib/api.js";
-import { num, TEST_META, TEST_TYPES, MATERIAL_DEFAULTS, REACTOR_FIELDS, materialsTotal } from "../lib/format.js";
+import { num, TEST_META, TEST_TYPES, MATERIAL_DEFAULTS, REACTOR_FIELDS, materialsTotal, gramsText } from "../lib/format.js";
 
 var nextRowId = 1;
-function newRow(name) { return { id: nextRowId++, name: name || "", percent: "" }; }
+function newRow(name) { return { id: nextRowId++, name: name || "", grams: "" }; }
 function defaultRows() { return MATERIAL_DEFAULTS.map(newRow); }
 
 function defaultTests() {
@@ -26,21 +26,20 @@ function emptyForm() {
   return { name: "", code: "", priority: "normal", description: "", rows: defaultRows(), reactor: {}, tests: defaultTests() };
 }
 
-// Rows with neither a name nor a percentage are left out, and so are the
-// standard materials left without a percentage.
+// Rows with neither a name nor a weight are left out, and so are the
+// standard materials left without a weight.
 function readMaterials(rows) {
-  return rows.map(function (r) { return { name: r.name.trim(), percent: num(r.percent) }; })
-    .filter(function (m) { return m.name || m.percent != null; })
-    .filter(function (m) { return m.percent != null || MATERIAL_DEFAULTS.indexOf(m.name) < 0; });
+  return rows.map(function (r) { return { name: r.name.trim(), grams: num(r.grams) }; })
+    .filter(function (m) { return m.name || m.grams != null; })
+    .filter(function (m) { return m.grams != null || MATERIAL_DEFAULTS.indexOf(m.name) < 0; });
 }
 
 function materialsProblem(list) {
   for (var i = 0; i < list.length; i++) {
-    if (!list[i].name) return "Give a name for the material at " + list[i].percent + " %.";
-    if (list[i].percent == null) return "Enter the percentage for " + list[i].name + ", or remove it.";
-    if (list[i].percent < 0) return list[i].name + ": the percentage can't be negative.";
+    if (!list[i].name) return "Give a name for the material weighing " + gramsText(list[i].grams) + ".";
+    if (list[i].grams == null) return "Enter the weight in grams for " + list[i].name + ", or remove it.";
+    if (list[i].grams < 0) return list[i].name + ": the weight can't be negative.";
   }
-  if (materialsTotal(list) > 100) return "The raw materials add up to more than 100 %.";
   return "";
 }
 
@@ -153,16 +152,16 @@ export default function AddFormulation() {
 
         <section className="form-section">
           <h2>Raw materials</h2>
-          <p className="spec-line">Each material as a percentage of the reactor charge. Leave a row empty to skip it.</p>
+          <p className="spec-line">Each material's weight in grams. Leave a row empty to skip it.</p>
           <div className="field material-rows">
             {form.rows.map(function (r) {
               return (
                 <div className="material-row" key={r.id}>
                   <input className="mr-name" aria-label="Material" placeholder="Material" value={r.name} onChange={function (e) { setRow(r.id, "name", e.target.value); }} />
-                  <div className="mr-pct">
-                    <input className="mr-percent" type="number" step="any" min="0" max="100" aria-label={"Percent " + (r.name || "")} placeholder="0"
-                      value={r.percent} onChange={function (e) { setRow(r.id, "percent", e.target.value); }} />
-                    <span>%</span>
+                  <div className="mr-amount">
+                    <input className="mr-grams" type="number" step="any" min="0" inputMode="decimal" aria-label={"Grams of " + (r.name || "material")} placeholder="0"
+                      value={r.grams} onChange={function (e) { setRow(r.id, "grams", e.target.value); }} />
+                    <span>g</span>
                   </div>
                   <button type="button" className="btn ghost small mr-remove" aria-label={"Remove " + (r.name || "material")}
                     onClick={function () { set("rows", form.rows.filter(function (x) { return x.id !== r.id; })); }}>✕</button>
@@ -173,8 +172,8 @@ export default function AddFormulation() {
           <div className="material-foot">
             <button type="button" className="btn ghost small" onClick={function () { set("rows", form.rows.concat([newRow("")])); }}>+ Add material</button>
             {materials.length > 0 && (
-              <span className={"material-total" + (total === 100 ? "" : " off")} aria-live="polite">
-                Total {total} %{total === 100 ? " ✓" : " — should add up to 100 %"}
+              <span className="material-total" aria-live="polite">
+                Total {gramsText(total)}
               </span>
             )}
           </div>

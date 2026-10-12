@@ -43,8 +43,8 @@ export var TEST_META = {
 // The tests Hi-Tech Company can choose for a new formulation.
 export var TEST_TYPES = Object.keys(TEST_META).filter(function (t) { return !TEST_META[t].legacy; });
 
-// The reactor recipe Hi-Tech Company sends with a formulation: raw
-// materials as a share of the charge, and the reactor conditions.
+// The reactor recipe Hi-Tech Company sends with a formulation: each raw
+// material's weight in grams, and the reactor conditions.
 export var MATERIAL_DEFAULTS = ["Crumb", "RA 480", "Process Oil", "Pine Tar", "Water"];
 export var REACTOR_FIELDS = [
   { key: "temperature", label: "Temperature", unit: "°C" },
@@ -53,9 +53,15 @@ export var REACTOR_FIELDS = [
   { key: "airReleaseTime", label: "Air releasing time", unit: "min" }
 ];
 
+// The raw materials' combined weight in grams.
 export function materialsTotal(materials) {
   // Rounded so 0.1 + 0.2 shows as 0.3.
-  return Math.round((materials || []).reduce(function (s, m) { return s + (m.percent || 0); }, 0) * 1000) / 1000;
+  return Math.round((materials || []).reduce(function (s, m) { return s + (m.grams || 0); }, 0) * 1000) / 1000;
+}
+
+// "1,250 g", "0.5 g"; "—" when there is no weight.
+export function gramsText(g) {
+  return g == null ? "—" : Number(g).toLocaleString(undefined, { maximumFractionDigits: 3 }) + " g";
 }
 
 export function hasReactor(f) {

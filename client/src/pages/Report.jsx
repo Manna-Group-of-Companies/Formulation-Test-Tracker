@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router";
 import { useSession } from "../context/session.jsx";
 import { api } from "../lib/api.js";
-import { fmtDate, specText, valueSummary, daysBetween, TEST_META, OUTCOME_TEXT, REACTOR_FIELDS, materialsTotal } from "../lib/format.js";
+import { fmtDate, specText, valueSummary, daysBetween, TEST_META, OUTCOME_TEXT, REACTOR_FIELDS, materialsTotal, gramsText } from "../lib/format.js";
 import "../styles/report.css";
 
 function Verdict({ result }) {
@@ -49,10 +49,10 @@ function Sheet({ data }) {
 
       {(f.materials || []).length > 0 && (
         <section>
-          <h3>Raw materials (% of charge)</h3>
+          <h3>Raw materials (g)</h3>
           <ul className="recipe-list">
-            {f.materials.map(function (m, i) { return <li key={i}><span>{m.name}</span><span className="mono">{m.percent != null ? m.percent + " %" : "—"}</span></li>; })}
-            <li className="recipe-total"><span>Total</span><span className="mono">{materialsTotal(f.materials)} %</span></li>
+            {f.materials.map(function (m, i) { return <li key={i}><span>{m.name}</span><span className="mono">{gramsText(m.grams)}</span></li>; })}
+            <li className="recipe-total"><span>Total</span><span className="mono">{gramsText(materialsTotal(f.materials))}</span></li>
           </ul>
         </section>
       )}
