@@ -49,7 +49,7 @@ export var MATERIAL_DEFAULTS = ["Crumb", "RA 480", "Process Oil", "Pine Tar", "W
 export var REACTOR_FIELDS = [
   { key: "temperature", label: "Temperature", unit: "°C" },
   { key: "cookingTime", label: "Cooking time", unit: "min" },
-  { key: "pressure", label: "Pressure", unit: "kg/cm²" },
+  { key: "pressure", label: "Pressure", unit: "bar" },
   { key: "airReleaseTime", label: "Air releasing time", unit: "min" }
 ];
 
